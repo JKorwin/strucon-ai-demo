@@ -1,4 +1,3 @@
-
 'use client';
 
 import Link from 'next/link';
@@ -64,19 +63,7 @@ export default function Navbar() {
           </SignedOut>
 
           <SignedIn>
-            <UserButton
-              afterSignOutUrl="/"
-              appearance={{
-                elements: {
-                  avatarBox: 'rounded-full overflow-hidden',
-                },
-                // @ts-ignore: avatarSize is supported at runtime
-                variables: {
-                  avatarSize: '56px',
-                  colorPrimary: '#4f46e5',
-                },
-              }}
-            />
+            <UserButton afterSignOutUrl="/" />
           </SignedIn>
         </div>
       </div>
