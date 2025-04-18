@@ -8,11 +8,12 @@ export default function SignInPage() {
       <SignIn 
         path="/sign-in"
         routing="path"
-        signUpUrl="/sign-up"
-        redirectUrl="/dashboard" // 👈 Redirect here after sign-in
+        redirectUrl="/dashboard"
         appearance={{
           elements: {
             card: "bg-white dark:bg-gray-800 shadow-lg",
+            headerSubtitle: "hidden",
+            footerAction: "hidden",
           },
         }}
       />
