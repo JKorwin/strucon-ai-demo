@@ -1,22 +1,20 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { useUser, SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
+import { useTheme } from 'next-themes';
+import Logo from '@/components/ui/logo'; // ✅ imported from your component folder
 
 export default function Navbar() {
-  const [darkMode, setDarkMode] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const { resolvedTheme, setTheme } = useTheme();
   const { isSignedIn } = useUser();
   const router = useRouter();
 
-  // Dark mode toggle effect
-  useEffect(() => {
-    document.documentElement.classList.toggle('dark', darkMode);
-  }, [darkMode]);
+  useEffect(() => setMounted(true), []);
 
-  // Redirect to dashboard after sign in
   useEffect(() => {
     if (isSignedIn) {
       router.push('/dashboard');
@@ -27,13 +25,7 @@ export default function Navbar() {
     <nav className="fixed top-0 left-0 w-full bg-white dark:bg-gray-900 shadow-md z-50 border-b border-gray-200 dark:border-gray-700">
       <div className="max-w-7xl mx-auto flex justify-between items-center p-4">
         <Link href="/">
-          <Image 
-            src="/images/strucon-logo.png" 
-            alt="Strucon.ai" 
-            width={180} 
-            height={60} 
-            className="object-contain"
-          />
+          {mounted && <Logo />} {/* ✅ use your logo component */}
         </Link>
 
         <div className="flex space-x-6 items-center">
@@ -81,10 +73,10 @@ export default function Navbar() {
 
           {/* Dark Mode Toggle */}
           <button
-            onClick={() => setDarkMode(!darkMode)}
+            onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
             className="px-3 py-2 rounded text-sm bg-gray-800 text-white hover:bg-gray-700 transition"
           >
-            {darkMode ? '☀️ Light' : '🌙 Dark'}
+            {resolvedTheme === 'dark' ? '☀️ Light' : '🌙 Dark'}
           </button>
         </div>
       </div>
