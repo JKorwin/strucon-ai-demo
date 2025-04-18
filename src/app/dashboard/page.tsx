@@ -9,7 +9,6 @@ export default function DashboardPage() {
   const [chatInput, setChatInput] = useState('');
   const [chatLog, setChatLog] = useState<{ role: string; content: string }[]>([]);
   const [chatLoading, setChatLoading] = useState(false);
-  const [threadId, setThreadId] = useState<string | null>(null);
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     setFiles((prev) => [...prev, ...acceptedFiles]);
@@ -32,7 +31,7 @@ export default function DashboardPage() {
       const res = await fetch('/api/chat-gpt', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: userMessage.content, threadId }),
+        body: JSON.stringify({ message: userMessage.content }),
       });
 
       if (!res.ok) {
@@ -47,7 +46,6 @@ export default function DashboardPage() {
       }
 
       const data = await res.json();
-      setThreadId(data.threadId);
       setChatLog((prev) => [...prev, { role: 'assistant', content: data.response }]);
     } catch (err) {
       console.error('Chat error:', err);
