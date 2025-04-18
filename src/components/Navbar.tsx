@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { useUser, SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
-import Logo from '@/components/ui/logo'; // ✅ imported from your component folder
+import Logo from '@/components/ui/logo';
 
 export default function Navbar() {
   const [mounted, setMounted] = useState(false);
@@ -25,7 +25,7 @@ export default function Navbar() {
     <nav className="fixed top-0 left-0 w-full bg-white dark:bg-gray-900 shadow-md z-50 border-b border-gray-200 dark:border-gray-700">
       <div className="max-w-7xl mx-auto flex justify-between items-center p-4">
         <Link href="/">
-          {mounted && <Logo />} {/* ✅ use your logo component */}
+          {mounted && <Logo />}
         </Link>
 
         <div className="flex space-x-6 items-center">
@@ -48,7 +48,7 @@ export default function Navbar() {
 
           {/* Auth Buttons */}
           <SignedOut>
-            <SignInButton 
+            <SignInButton
               mode="modal"
               appearance={{
                 elements: {
@@ -75,6 +75,7 @@ export default function Navbar() {
           <button
             onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
             className="px-3 py-2 rounded text-sm bg-gray-800 text-white hover:bg-gray-700 transition"
+            disabled={!mounted}
           >
             {resolvedTheme === 'dark' ? '☀️ Light' : '🌙 Dark'}
           </button>

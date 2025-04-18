@@ -14,8 +14,8 @@ export default function Logo() {
     <Image
       src={src}
       alt="Foreman Logo"
-      width={40}
-      height={40}
+      width={64}
+      height={64}
       className="object-contain"
       priority
     />
