@@ -63,7 +63,14 @@ export default function Navbar() {
           </SignedOut>
 
           <SignedIn>
-            <UserButton afterSignOutUrl="/" />
+            <UserButton
+              afterSignOutUrl="/"
+              appearance={{
+                elements: {
+                  avatarBox: 'w-12 h-12' // ✅ Bigger profile picture (48px)
+                }
+              }}
+            />
           </SignedIn>
         </div>
       </div>
