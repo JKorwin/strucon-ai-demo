@@ -27,8 +27,8 @@ async function extractTextViaChildProcess(buffer: Buffer, fileName: string): Pro
   writeFileSync(tmpFile, buffer);
 
   const script = ext === '.pdf'
-    ? 'scripts/parsePDF.mjs'
-    : 'scripts/parseCSV.mjs';
+    ? 'scripts/parsePDF.cjs'
+    : 'scripts/parseCSV.cjs';
 
   try {
     const { stdout } = await execFileAsync('node', [join(process.cwd(), script), tmpFile]);
