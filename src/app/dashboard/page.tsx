@@ -102,7 +102,7 @@ export default function DashboardPage() {
             <h1 className="text-2xl font-bold mb-2 text-center text-gray-900 dark:text-white">Ask Foreman</h1>
             <div
               ref={chatContainerRef}
-              className="flex-grow w-full flex justify-center overflow-y-auto h-[calc(100vh-250px)] max-h-[calc(100vh-250px)] pb-4 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-900"
+              className="flex-grow w-full flex justify-center overflow-y-auto h-[calc(100vh-400px)] max-h-[calc(100vh-400px)] pb-4 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-900"
             >
               <div className="w-1/3 space-y-4">
                 {chatLog.map((msg, idx) => (
@@ -122,7 +122,7 @@ export default function DashboardPage() {
                 )}
               </div>
             </div>
-            <div className="absolute bottom-[80px] left-1/2 transform -translate-x-1/2 w-full max-w-2xl px-4">
+            <div className="absolute bottom-[160px] left-1/2 transform -translate-x-1/2 w-full max-w-2xl px-4">
               <div className="flex gap-2 rounded-2xl shadow-md bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 p-3">
                 <input
                   ref={inputRef}
