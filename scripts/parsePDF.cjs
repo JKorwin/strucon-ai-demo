@@ -2,9 +2,10 @@
 // scripts/parsePDF.cjs
 
 const fs = require('fs');
-const pdfjs = require('pdfjs-dist/legacy/build/pdf.js');
+// Pull in the main PDF.js entry — it exports getDocument, GlobalWorkerOptions, etc.
+const pdfjs = require('pdfjs-dist');
 
-// Turn off all PDF.js workers so it never tries to load pdf.worker.js or canvas
+// Turn off all workers (no fake‑worker/canvas loading)
 pdfjs.GlobalWorkerOptions.disableWorker = true;
 
 const { getDocument } = pdfjs;
@@ -15,11 +16,9 @@ if (!filePath) {
   process.exit(1);
 }
 
-(async () => {
+;(async () => {
   try {
-    // Read the file into a Buffer
     const data = new Uint8Array(fs.readFileSync(filePath));
-    // Parse with PDF.js entirely in‑process
     const loadingTask = getDocument({ data });
     const pdf = await loadingTask.promise;
 
