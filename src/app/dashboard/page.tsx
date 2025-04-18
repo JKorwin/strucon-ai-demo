@@ -4,6 +4,7 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { SignedIn, SignedOut, SignIn } from '@clerk/nextjs';
 import { CheckCircle } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 
 export default function DashboardPage() {
   const [files, setFiles] = useState<File[]>([]);
@@ -12,6 +13,7 @@ export default function DashboardPage() {
   const [chatInput, setChatInput] = useState('');
   const [chatLog, setChatLog] = useState<{ role: string; content: string }[]>([]);
   const [chatLoading, setChatLoading] = useState(false);
+  const [showScrollButton, setShowScrollButton] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
@@ -79,9 +81,24 @@ export default function DashboardPage() {
 
   useEffect(() => {
     const container = chatContainerRef.current;
-    if (container) {
-      container.scrollTop = container.scrollHeight;
-    }
+    if (!container) return;
+
+    const handleScroll = () => {
+      const { scrollTop, scrollHeight, clientHeight } = container;
+      setShowScrollButton(scrollTop + clientHeight < scrollHeight - 50);
+    };
+
+    container.addEventListener('scroll', handleScroll);
+    return () => container.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToBottom = () => {
+    const container = chatContainerRef.current;
+    if (container) container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
   }, [chatLog]);
 
   return (
@@ -102,7 +119,7 @@ export default function DashboardPage() {
             <h1 className="text-2xl font-bold mb-2 text-center text-gray-900 dark:text-white">Ask Foreman</h1>
             <div
               ref={chatContainerRef}
-              className="flex-grow w-full flex justify-center overflow-y-auto h-[calc(100vh-400px)] max-h-[calc(100vh-400px)] pb-4 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-900"
+              className="relative flex-grow w-full flex justify-center overflow-y-auto h-[calc(100vh-400px)] max-h-[calc(100vh-400px)] pb-4 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-900 pr-10"
             >
               <div className="w-1/3 space-y-4">
                 {chatLog.map((msg, idx) => (
@@ -121,7 +138,17 @@ export default function DashboardPage() {
                   <div className="text-sm text-gray-500">Foreman is thinking…</div>
                 )}
               </div>
+
+              {showScrollButton && (
+                <button
+                  onClick={scrollToBottom}
+                  className="absolute right-2 bottom-[190px] bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded-full shadow"
+                >
+                  <ChevronDown className="w-5 h-5" />
+                </button>
+              )}
             </div>
+
             <div className="absolute bottom-[160px] left-1/2 transform -translate-x-1/2 w-full max-w-2xl px-4">
               <div className="flex gap-2 rounded-2xl shadow-md bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 p-3">
                 <input
