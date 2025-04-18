@@ -1,12 +1,18 @@
 // src/app/api/upload/route.ts
+export const runtime = 'nodejs';
 
-import { NextResponse }       from 'next/server';
-import { getDocument }        from 'pdfjs-dist/legacy/build/pdf.js';
-import { parse as parseCSV }  from 'csv-parse/sync';
-import { extname }            from 'path';
-import { createClient }       from '@supabase/supabase-js';
-import { OpenAI }             from 'openai';
-import { auth }               from '@clerk/nextjs/server';
+import { NextResponse }      from 'next/server';
+import { execFile }         from 'child_process';
+import { promisify }        from 'util';
+import { writeFileSync,
+         unlinkSync }       from 'fs';
+import { join, extname }    from 'path';
+import { tmpdir }           from 'os';
+import { createClient }     from '@supabase/supabase-js';
+import { OpenAI }           from 'openai';
+import { auth }             from '@clerk/nextjs/server';
+
+const execFileAsync = promisify(execFile);
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -15,61 +21,21 @@ const supabase = createClient(
 );
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-async function extractText(buffer: Buffer, fileName: string): Promise<string> {
+async function extractTextViaChildProcess(buffer: Buffer, fileName: string): Promise<string> {
   const ext = extname(fileName).toLowerCase();
+  const tmpFile = join(tmpdir(), `tmp-${Date.now()}${ext}`);
+  writeFileSync(tmpFile, buffer);
 
-  if (ext === '.pdf') {
-    // cast to any so disableWorker is allowed
-    const loadingTask = getDocument({
-      data: new Uint8Array(buffer),
-      disableWorker: true,
-    } as any);
+  const script = ext === '.pdf'
+    ? 'scripts/parsePDF.mjs'
+    : 'scripts/parseCSV.mjs';
 
-    const pdf = await loadingTask.promise;
-    let fullText = '';
-
-    for (let i = 1; i <= pdf.numPages; i++) {
-      const page    = await pdf.getPage(i);
-      const content = await page.getTextContent();
-      const text    = content.items
-        .map((item: any) => ('str' in item ? item.str : ''))
-        .join(' ');
-
-      const filtered = text
-        .split('\n')
-        .filter(line =>
-          !line.includes('FoxitSansBold.pfb') &&
-          !line.includes('FoxitSans.pfb') &&
-          !line.toLowerCase().includes('standard font') &&
-          line.trim().length > 0
-        )
-        .join('\n');
-
-      fullText += filtered + '\n\n';
-    }
-    return fullText;
+  try {
+    const { stdout } = await execFileAsync('node', [join(process.cwd(), script), tmpFile]);
+    return stdout;
+  } finally {
+    unlinkSync(tmpFile);
   }
-
-  if (ext === '.csv') {
-    const raw = buffer.toString('utf8');
-    try {
-      const records = parseCSV(raw, {
-        columns: true,
-        skip_empty_lines: true,
-        relax_column_count: true,
-      });
-      return JSON.stringify(records, null, 2);
-    } catch {
-      const records = parseCSV(raw, {
-        columns: false,
-        skip_empty_lines: true,
-        relax_column_count: true,
-      });
-      return records.map((r: string[]) => r.join(', ')).join('\n');
-    }
-  }
-
-  throw new Error(`Unsupported file type: ${ext}`);
 }
 
 export async function POST(req: Request) {
@@ -78,19 +44,16 @@ export async function POST(req: Request) {
   const { userId } = await auth();
 
   if (!file || !userId) {
-    return NextResponse.json({ message: 'Missing file or user session.' }, { status: 400 });
+    return NextResponse.json({ message: 'Missing file or session' }, { status: 400 });
   }
 
-  const buffer   = Buffer.from(await file.arrayBuffer());
-  const fileName = file.name;
-  const fileType = extname(fileName).slice(1);
-
+  const buffer = Buffer.from(await file.arrayBuffer());
   let fullText: string;
   try {
-    fullText = await extractText(buffer, fileName);
-  } catch (err) {
-    console.error('[Parse Error]', err);
-    return NextResponse.json({ message: 'Failed to parse document.' }, { status: 500 });
+    fullText = await extractTextViaChildProcess(buffer, file.name);
+  } catch (e) {
+    console.error('[Parse Error]', e);
+    return NextResponse.json({ message: 'Parsing failed' }, { status: 500 });
   }
 
   const snippet = fullText.slice(0, 3000);
@@ -100,32 +63,29 @@ export async function POST(req: Request) {
       {
         role: 'system',
         content: `
-You are Katy, the AI Co-Pilot for construction documents.
-Analyze the uploaded document and return a clear, structured breakdown.
-Highlight errors, missing details, and red flags in a professional tone.
-Use bullet points or lists where appropriate.
+You are Katy, the AI Co-Pilot for construction docs.
+Analyze the uploaded doc and give a clear, structured breakdown.
+Highlight errors, missing details, and red flags.
+Use bullet points or lists; be direct and professional.
         `.trim(),
       },
-      { role: 'user', content: `Analyze this document:\n\n${snippet}` },
+      { role: 'user', content: snippet },
     ],
   });
 
-  const gptSummary = gptRes.choices[0].message?.content;
+  const summary = gptRes.choices[0].message?.content;
   const { error } = await supabase.from('documents').insert([{
     user_id:     userId,
-    filename:    fileName,
-    file_type:   fileType,
-    gpt_summary: gptSummary,
+    filename:    file.name,
+    file_type:   extname(file.name).slice(1),
+    gpt_summary: summary,
     full_text:   fullText,
   }]);
 
   if (error) {
-    console.error('[DB INSERT ERROR]', error);
-    return NextResponse.json({ message: 'Database insert failed.', error }, { status: 500 });
+    console.error('[DB ERROR]', error);
+    return NextResponse.json({ message: 'DB insert failed' }, { status: 500 });
   }
 
-  return NextResponse.json({
-    message: `File "${fileName}" analyzed and saved.`,
-    analysis: gptSummary,
-  });
+  return NextResponse.json({ message: 'Saved!', analysis: summary });
 }

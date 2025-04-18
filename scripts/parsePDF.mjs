@@ -1,9 +1,12 @@
 import fs from 'fs';
 import pdfjs from 'pdfjs-dist/legacy/build/pdf.js';
 
-const { getDocument } = pdfjs;
+// Disable PDF.js workers (no fake‑worker or canvas loading)
+pdfjs.GlobalWorkerOptions.disableWorker = true;
 
+const { getDocument } = pdfjs;
 const filePath = process.argv[2];
+
 if (!filePath) {
   console.error('No file path provided');
   process.exit(1);
@@ -16,14 +19,10 @@ async function parsePDF(filePath) {
 
   let fullText = '';
   for (let i = 1; i <= pdf.numPages; i++) {
-    const page = await pdf.getPage(i);
+    const page    = await pdf.getPage(i);
     const content = await page.getTextContent();
-
-    const text = content.items
-      .map((item) => {
-        if ('str' in item) return item.str;
-        return '';
-      })
+    const text    = content.items
+      .map(item => ('str' in item ? item.str : ''))
       .join(' ');
 
     const filtered = text
