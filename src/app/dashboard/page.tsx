@@ -1,8 +1,6 @@
-// Full updated DashboardPage.tsx with scrollable chat section only
-
 'use client';
 
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { SignedIn, SignedOut, SignIn } from '@clerk/nextjs';
 import { CheckCircle } from 'lucide-react';
@@ -15,6 +13,7 @@ export default function DashboardPage() {
   const [chatLog, setChatLog] = useState<{ role: string; content: string }[]>([]);
   const [chatLoading, setChatLoading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
 
   const simulateUpload = (fileList: File[]) => {
     let interval = setInterval(() => {
@@ -78,6 +77,13 @@ export default function DashboardPage() {
     }
   };
 
+  useEffect(() => {
+    const container = chatContainerRef.current;
+    if (container) {
+      container.scrollTop = container.scrollHeight;
+    }
+  }, [chatLog]);
+
   return (
     <>
       <SignedOut><SignIn /></SignedOut>
@@ -94,7 +100,7 @@ export default function DashboardPage() {
           {/* Chat Section */}
           <main className="flex flex-col items-center justify-between flex-grow px-6 py-4 bg-white dark:bg-gray-900 text-base w-full relative">
             <h1 className="text-2xl font-bold mb-2 text-center text-gray-900 dark:text-white">Ask Foreman</h1>
-            <div className="flex-grow w-full flex justify-center overflow-y-auto max-h-full">
+            <div ref={chatContainerRef} className="flex-grow w-full flex justify-center overflow-y-auto max-h-[calc(100%-150px)] pb-32">
               <div className="w-1/3 space-y-4">
                 {chatLog.map((msg, idx) => (
                   <div
@@ -113,7 +119,7 @@ export default function DashboardPage() {
                 )}
               </div>
             </div>
-            <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 w-full max-w-2xl px-4">
+            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 w-full max-w-2xl px-4">
               <div className="flex gap-2 rounded-2xl shadow-md bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 p-3">
                 <input
                   ref={inputRef}
