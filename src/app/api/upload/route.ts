@@ -1,17 +1,12 @@
 // src/app/api/upload/route.ts
 
-import { NextResponse }   from 'next/server';
-import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist/legacy/build/pdf.js';
-import { parse as parseCSV }             from 'csv-parse/sync';
-import { extname }                       from 'path';
-import { createClient }                  from '@supabase/supabase-js';
-import { OpenAI }                        from 'openai';
-import { auth }                          from '@clerk/nextjs/server';
-
-// point pdfjs at its worker so it bundles correctly on Vercel
-GlobalWorkerOptions.workerSrc = require.resolve(
-  'pdfjs-dist/legacy/build/pdf.worker.js'
-);
+import { NextResponse }       from 'next/server';
+import { getDocument }        from 'pdfjs-dist/legacy/build/pdf.js';
+import { parse as parseCSV }  from 'csv-parse/sync';
+import { extname }            from 'path';
+import { createClient }       from '@supabase/supabase-js';
+import { OpenAI }             from 'openai';
+import { auth }               from '@clerk/nextjs/server';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -24,19 +19,22 @@ async function extractText(buffer: Buffer, fileName: string): Promise<string> {
   const ext = extname(fileName).toLowerCase();
 
   if (ext === '.pdf') {
-    // your pdfjs-dist logic, using the uploaded buffer
-    const loadingTask = getDocument({ data: new Uint8Array(buffer) });
-    const pdf = await loadingTask.promise;
+    // cast to any so disableWorker is allowed
+    const loadingTask = getDocument({
+      data: new Uint8Array(buffer),
+      disableWorker: true,
+    } as any);
 
+    const pdf = await loadingTask.promise;
     let fullText = '';
+
     for (let i = 1; i <= pdf.numPages; i++) {
-      const page   = await pdf.getPage(i);
+      const page    = await pdf.getPage(i);
       const content = await page.getTextContent();
-      const text = content.items
+      const text    = content.items
         .map((item: any) => ('str' in item ? item.str : ''))
         .join(' ');
 
-      // apply your filters
       const filtered = text
         .split('\n')
         .filter(line =>
@@ -49,15 +47,12 @@ async function extractText(buffer: Buffer, fileName: string): Promise<string> {
 
       fullText += filtered + '\n\n';
     }
-
     return fullText;
   }
 
   if (ext === '.csv') {
-    // your CSV logic
     const raw = buffer.toString('utf8');
     try {
-      // first try with headers
       const records = parseCSV(raw, {
         columns: true,
         skip_empty_lines: true,
@@ -65,7 +60,6 @@ async function extractText(buffer: Buffer, fileName: string): Promise<string> {
       });
       return JSON.stringify(records, null, 2);
     } catch {
-      // fallback to unstructured rows
       const records = parseCSV(raw, {
         columns: false,
         skip_empty_lines: true,
@@ -118,11 +112,11 @@ Use bullet points or lists where appropriate.
 
   const gptSummary = gptRes.choices[0].message?.content;
   const { error } = await supabase.from('documents').insert([{
-    user_id: userId,
-    filename: fileName,
-    file_type: fileType,
+    user_id:     userId,
+    filename:    fileName,
+    file_type:   fileType,
     gpt_summary: gptSummary,
-    full_text: fullText,
+    full_text:   fullText,
   }]);
 
   if (error) {
