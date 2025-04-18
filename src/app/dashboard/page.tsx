@@ -100,7 +100,10 @@ export default function DashboardPage() {
           {/* Chat Section */}
           <main className="flex flex-col items-center justify-between flex-grow px-6 py-4 bg-white dark:bg-gray-900 text-base w-full relative">
             <h1 className="text-2xl font-bold mb-2 text-center text-gray-900 dark:text-white">Ask Foreman</h1>
-            <div ref={chatContainerRef} className="flex-grow w-full flex justify-center overflow-y-auto max-h-[calc(100%-150px)] pb-32">
+            <div
+              ref={chatContainerRef}
+              className="flex-grow w-full flex justify-center overflow-y-auto max-h-[calc(100%-144px)] pb-8 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-900"
+            >
               <div className="w-1/3 space-y-4">
                 {chatLog.map((msg, idx) => (
                   <div
