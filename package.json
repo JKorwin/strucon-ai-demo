@@ -1,4 +1,13 @@
 {
+  "name": "strucon-ai-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build --no-lint",
+    "start": "next start",
+    "lint": "next lint"
+  },
   "dependencies": {
     "@clerk/nextjs": "^6.15.0",
     "@radix-ui/react-navigation-menu": "^1.2.5",
