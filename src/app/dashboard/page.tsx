@@ -14,26 +14,25 @@ export default function DashboardPage() {
   const [chatLoading, setChatLoading] = useState(false);
 
   const simulateUpload = (fileList: File[]) => {
-    let progress = [...fileList].map(() => 0);
     let interval = setInterval(() => {
       setUploadProgress((prev) => {
         const updated: Record<string, number> = { ...prev };
+        let allDone = true;
+
         for (let i = 0; i < fileList.length; i++) {
-          if (updated[fileList[i].name] >= 100) continue;
+          const file = fileList[i];
+          if (updated[file.name] >= 100) continue;
 
-          const speedMultiplier = i === currentUploadingIndex ? 1.0 : Math.max(0.05, 1.0 - 0.2 * i);
+          allDone = false;
+          const speedMultiplier = i === currentUploadingIndex ? 1.0 : Math.max(0.35, 0.65 - 0.05 * i);
           const increment = 2 + Math.random() * 3;
-          updated[fileList[i].name] = Math.min(
-            100,
-            (updated[fileList[i].name] || 0) + increment * speedMultiplier
-          );
+          updated[file.name] = Math.min(100, (updated[file.name] || 0) + increment * speedMultiplier);
 
-          if (updated[fileList[i].name] === 100 && i === currentUploadingIndex) {
+          if (updated[file.name] === 100 && i === currentUploadingIndex) {
             setCurrentUploadingIndex((prevIdx) => prevIdx + 1);
           }
         }
 
-        const allDone = fileList.every((file) => updated[file.name] >= 100);
         if (allDone) clearInterval(interval);
         return updated;
       });
