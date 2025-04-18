@@ -1,31 +1,78 @@
-import { NextResponse } from 'next/server';
-import { OpenAI } from 'openai';
-import { createClient } from '@supabase/supabase-js';
-import pdfParse from 'pdf-parse';
-import { parse } from 'csv-parse/sync';
-import { extname } from 'path';
-import { auth } from '@clerk/nextjs/server';
+// src/app/api/upload/route.ts
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+import { NextResponse }   from 'next/server';
+import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist/legacy/build/pdf.js';
+import { parse as parseCSV }             from 'csv-parse/sync';
+import { extname }                       from 'path';
+import { createClient }                  from '@supabase/supabase-js';
+import { OpenAI }                        from 'openai';
+import { auth }                          from '@clerk/nextjs/server';
+
+// point pdfjs at its worker so it bundles correctly on Vercel
+GlobalWorkerOptions.workerSrc = require.resolve(
+  'pdfjs-dist/legacy/build/pdf.worker.js'
+);
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!,
   { auth: { persistSession: false, detectSessionInUrl: false } }
 );
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 async function extractText(buffer: Buffer, fileName: string): Promise<string> {
   const ext = extname(fileName).toLowerCase();
 
   if (ext === '.pdf') {
-    const data = await pdfParse(buffer);
-    return data.text;
+    // your pdfjs-dist logic, using the uploaded buffer
+    const loadingTask = getDocument({ data: new Uint8Array(buffer) });
+    const pdf = await loadingTask.promise;
+
+    let fullText = '';
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page   = await pdf.getPage(i);
+      const content = await page.getTextContent();
+      const text = content.items
+        .map((item: any) => ('str' in item ? item.str : ''))
+        .join(' ');
+
+      // apply your filters
+      const filtered = text
+        .split('\n')
+        .filter(line =>
+          !line.includes('FoxitSansBold.pfb') &&
+          !line.includes('FoxitSans.pfb') &&
+          !line.toLowerCase().includes('standard font') &&
+          line.trim().length > 0
+        )
+        .join('\n');
+
+      fullText += filtered + '\n\n';
+    }
+
+    return fullText;
   }
 
   if (ext === '.csv') {
-    const text = buffer.toString('utf8');
-    const records = parse(text, { columns: false, skip_empty_lines: true });
-    return records.map((row: string[]) => row.join(', ')).join('\n');
+    // your CSV logic
+    const raw = buffer.toString('utf8');
+    try {
+      // first try with headers
+      const records = parseCSV(raw, {
+        columns: true,
+        skip_empty_lines: true,
+        relax_column_count: true,
+      });
+      return JSON.stringify(records, null, 2);
+    } catch {
+      // fallback to unstructured rows
+      const records = parseCSV(raw, {
+        columns: false,
+        skip_empty_lines: true,
+        relax_column_count: true,
+      });
+      return records.map((r: string[]) => r.join(', ')).join('\n');
+    }
   }
 
   throw new Error(`Unsupported file type: ${ext}`);
@@ -33,19 +80,18 @@ async function extractText(buffer: Buffer, fileName: string): Promise<string> {
 
 export async function POST(req: Request) {
   const formData = await req.formData();
-  const file = formData.get('file') as File | null;
+  const file     = formData.get('file') as File | null;
   const { userId } = await auth();
 
   if (!file || !userId) {
     return NextResponse.json({ message: 'Missing file or user session.' }, { status: 400 });
   }
 
-  const arrayBuffer = await file.arrayBuffer();
-  const buffer = Buffer.from(arrayBuffer);
+  const buffer   = Buffer.from(await file.arrayBuffer());
   const fileName = file.name;
   const fileType = extname(fileName).slice(1);
 
-  let fullText = '';
+  let fullText: string;
   try {
     fullText = await extractText(buffer, fileName);
   } catch (err) {
@@ -54,28 +100,23 @@ export async function POST(req: Request) {
   }
 
   const snippet = fullText.slice(0, 3000);
-
-  const gptResponse = await openai.chat.completions.create({
+  const gptRes  = await openai.chat.completions.create({
     model: 'gpt-3.5-turbo',
     messages: [
       {
         role: 'system',
         content: `
 You are Katy, the AI Co-Pilot for construction documents.
-Analyze the uploaded document (PDF or CSV) and return a clear, structured breakdown.
+Analyze the uploaded document and return a clear, structured breakdown.
 Highlight errors, missing details, and red flags in a professional tone.
 Use bullet points or lists where appropriate.
         `.trim(),
       },
-      {
-        role: 'user',
-        content: `Analyze this document and summarize any errors or flags:\n\n${snippet}`,
-      },
+      { role: 'user', content: `Analyze this document:\n\n${snippet}` },
     ],
   });
 
-  const gptSummary = gptResponse.choices[0].message?.content;
-
+  const gptSummary = gptRes.choices[0].message?.content;
   const { error } = await supabase.from('documents').insert([{
     user_id: userId,
     filename: fileName,
