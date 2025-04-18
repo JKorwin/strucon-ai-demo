@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useUser, SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
 import Logo from '@/components/ui/logo';
@@ -24,6 +24,7 @@ export default function Navbar() {
         </Link>
 
         <div className="flex space-x-6 items-center">
+          {/* Dropdown Menu */}
           <div className="relative group">
             <button className="px-3 py-2 text-white">Features ▼</button>
             <div className="absolute hidden group-hover:block bg-gray-800 shadow-lg rounded-md mt-1 py-2">
@@ -40,6 +41,7 @@ export default function Navbar() {
             Book a Demo
           </Link>
 
+          {/* Auth Buttons */}
           <SignedOut>
             <SignInButton
               mode="modal"
