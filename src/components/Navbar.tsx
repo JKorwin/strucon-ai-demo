@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -67,8 +68,12 @@ export default function Navbar() {
               afterSignOutUrl="/"
               appearance={{
                 elements: {
-                  avatarBox: 'w-14 h-14',
-                  avatarImage: 'w-14 h-14 rounded-full',
+                  avatarBox: 'rounded-full overflow-hidden',
+                },
+                // @ts-ignore: avatarSize is supported at runtime
+                variables: {
+                  avatarSize: '56px',
+                  colorPrimary: '#4f46e5',
                 },
               }}
             />
