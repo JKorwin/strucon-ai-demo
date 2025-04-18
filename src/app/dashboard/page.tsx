@@ -1,6 +1,8 @@
+// Full updated DashboardPage.tsx with scrollable chat section only
+
 'use client';
 
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { SignedIn, SignedOut, SignIn } from '@clerk/nextjs';
 import { CheckCircle } from 'lucide-react';
@@ -80,21 +82,19 @@ export default function DashboardPage() {
     <>
       <SignedOut><SignIn /></SignedOut>
       <SignedIn>
-        <div className="flex h-screen text-lg">
+        <div className="flex h-[calc(100vh-64px)] overflow-hidden text-lg">
           {/* Tabs column on left */}
           <aside className="w-64 bg-gray-100 dark:bg-gray-900 border-r p-4 flex flex-col">
             <h2 className="text-lg font-semibold mb-4 text-gray-800 dark:text-white">Tabs</h2>
-            <div className="bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-white rounded-md p-4 text-sm mb-2">Tab 1</div>
-            <div className="bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-white rounded-md p-4 text-sm mb-2">Tab 2</div>
-            <div className="bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-white rounded-md p-4 text-sm mb-2">Tab 3</div>
-            <div className="bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-white rounded-md p-4 text-sm mb-2">Tab 4</div>
-            <div className="bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-white rounded-md p-4 text-sm">Tab 5</div>
+            {[1, 2, 3, 4, 5].map(n => (
+              <div key={n} className="bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-white rounded-md p-4 text-sm mb-2">Tab {n}</div>
+            ))}
           </aside>
 
           {/* Chat Section */}
           <main className="flex flex-col items-center justify-between flex-grow px-6 py-4 bg-white dark:bg-gray-900 text-base w-full relative">
-            <h1 className="text-2xl font-bold mb-4 text-center text-gray-900 dark:text-white">Ask Foreman</h1>
-            <div className="flex-grow overflow-y-auto w-full flex justify-center">
+            <h1 className="text-2xl font-bold mb-2 text-center text-gray-900 dark:text-white">Ask Foreman</h1>
+            <div className="flex-grow w-full flex justify-center overflow-y-auto max-h-full">
               <div className="w-1/3 space-y-4">
                 {chatLog.map((msg, idx) => (
                   <div
@@ -113,7 +113,7 @@ export default function DashboardPage() {
                 )}
               </div>
             </div>
-            <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 w-full max-w-2xl px-4">
+            <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 w-full max-w-2xl px-4">
               <div className="flex gap-2 rounded-2xl shadow-md bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 p-3">
                 <input
                   ref={inputRef}
