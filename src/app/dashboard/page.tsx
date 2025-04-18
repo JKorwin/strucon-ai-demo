@@ -3,8 +3,7 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { SignedIn, SignedOut, SignIn } from '@clerk/nextjs';
-import { CheckCircle } from 'lucide-react';
-import { ChevronDown } from 'lucide-react';
+import { CheckCircle, ChevronDown } from 'lucide-react';
 
 export default function DashboardPage() {
   const [files, setFiles] = useState<File[]>([]);
@@ -117,11 +116,12 @@ export default function DashboardPage() {
           {/* Chat Section */}
           <main className="flex flex-col items-center flex-grow px-6 py-4 bg-white dark:bg-gray-900 text-base w-full relative">
             <h1 className="text-2xl font-bold mb-2 text-center text-gray-900 dark:text-white">Ask Foreman</h1>
+
             <div
               ref={chatContainerRef}
               className="relative flex-grow w-full flex justify-center overflow-y-auto h-[calc(100vh-400px)] max-h-[calc(100vh-400px)] pb-4 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-900 pr-10"
             >
-              <div className="w-1/3 space-y-4">
+              <div className="w-full max-w-2xl space-y-4 mx-auto">
                 {chatLog.map((msg, idx) => (
                   <div
                     key={idx}
@@ -142,7 +142,7 @@ export default function DashboardPage() {
               {showScrollButton && (
                 <button
                   onClick={scrollToBottom}
-                  className="absolute right-2 bottom-[190px] bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded-full shadow"
+                  className="absolute left-1/2 transform -translate-x-1/2 bottom-[170px] bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded-full shadow"
                 >
                   <ChevronDown className="w-5 h-5" />
                 </button>
