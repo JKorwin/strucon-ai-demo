@@ -24,6 +24,7 @@
     "pdfjs-dist": "^2.16.105",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-dropzone": "^14.3.8",
     "tailwind-merge": "^3.0.2",
     "tw-animate-css": "^1.2.5"
   },
