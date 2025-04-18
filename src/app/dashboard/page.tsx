@@ -79,15 +79,53 @@ export default function DashboardPage() {
       </SignedOut>
       <SignedIn>
         <div className="flex h-screen text-lg">
-          {/* Sidebar */}
-          <aside className="w-64 bg-gray-100 dark:bg-gray-900 border-r p-4 flex flex-col">
+          {/* Chat (Main Left Section) */}
+          <main className="flex flex-col flex-grow p-6 bg-white dark:bg-gray-950 max-w-4xl w-[60%] mx-auto text-base">
+            <h1 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Ask Foreman</h1>
+            <div className="flex-grow overflow-y-auto rounded-md p-4 bg-transparent space-y-4">
+              {chatLog.map((msg, idx) => (
+                <div
+                  key={idx}
+                  className={`inline-block px-4 py-2 rounded-lg break-words whitespace-pre-wrap text-base leading-relaxed max-w-[75%] ${
+                    msg.role === 'user'
+                      ? 'bg-blue-600 text-white self-end ml-auto text-right'
+                      : 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white self-start'
+                  }`}
+                >
+                  {msg.content}
+                </div>
+              ))}
+              {chatLoading && (
+                <div className="text-sm text-gray-500">Foreman is thinking…</div>
+              )}
+            </div>
+            <div className="mt-4 flex gap-2">
+              <input
+                type="text"
+                value={chatInput}
+                onChange={(e) => setChatInput(e.target.value)}
+                placeholder="Ask a question about your project..."
+                className="flex-grow border rounded px-4 py-2 text-base"
+              />
+              <button
+                onClick={sendMessage}
+                className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded text-base disabled:opacity-50"
+                disabled={chatLoading}
+              >
+                Send
+              </button>
+            </div>
+          </main>
+
+          {/* File Upload Section on Right */}
+          <aside className="w-64 bg-gray-100 dark:bg-gray-900 border-l p-4 flex flex-col">
             <h2 className="text-lg font-semibold mb-4 text-gray-800 dark:text-white">
               Uploaded Files
             </h2>
             <div
               {...getRootProps()}
-              className={`border-2 border-dashed rounded-md p-4 text-sm text-center cursor-pointer transition ${
-                isDragActive ? 'border-blue-400 bg-blue-50' : 'border-gray-300 bg-white dark:bg-gray-800'
+              className={`rounded-md p-4 text-sm text-center cursor-pointer transition ${
+                isDragActive ? 'bg-blue-500 text-white' : 'bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-white'
               }`}
             >
               <input {...getInputProps()} />
@@ -118,44 +156,6 @@ export default function DashboardPage() {
               )}
             </ul>
           </aside>
-
-          {/* Chat */}
-          <main className="flex flex-col flex-grow p-6 bg-white dark:bg-gray-950 max-w-4xl w-[60%] mx-auto text-base">
-            <h1 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Ask Foreman</h1>
-            <div className="flex-grow overflow-y-auto border rounded-md p-4 bg-gray-50 dark:bg-gray-800 space-y-4">
-              {chatLog.map((msg, idx) => (
-                <div
-                  key={idx}
-                  className={`inline-block px-4 py-2 rounded-lg break-words whitespace-pre-wrap text-base leading-relaxed ${
-                    msg.role === 'user'
-                      ? 'bg-blue-600 text-white self-end ml-auto text-right'
-                      : 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white self-start'
-                  }`}
-                >
-                  {msg.content}
-                </div>
-              ))}
-              {chatLoading && (
-                <div className="text-sm text-gray-500">Foreman is thinking…</div>
-              )}
-            </div>
-            <div className="mt-4 flex gap-2">
-              <input
-                type="text"
-                value={chatInput}
-                onChange={(e) => setChatInput(e.target.value)}
-                placeholder="Ask a question about your project..."
-                className="flex-grow border rounded px-4 py-2 text-base"
-              />
-              <button
-                onClick={sendMessage}
-                className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded text-base disabled:opacity-50"
-                disabled={chatLoading}
-              >
-                Send
-              </button>
-            </div>
-          </main>
         </div>
       </SignedIn>
     </>
