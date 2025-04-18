@@ -1,3 +1,5 @@
+'use client';
+
 import Footer from "@/components/sections/Footer";
 import Hero from "@/components/sections/Hero";
 import Features from "@/components/sections/Features";
