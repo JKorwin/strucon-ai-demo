@@ -46,7 +46,7 @@ export async function POST(req: Request) {
   const formData = await req.formData();
   const file = formData.get('file') as File | null;
   const { userId, getToken } = await auth();
-  const token = await getToken(); // still needed if you want to gate uploads
+  const token = await getToken(); 
 
   if (!file || !userId || !token) {
     return NextResponse.json({ message: 'Missing file or user session.' }, { status: 400 });

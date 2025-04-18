@@ -1,4 +1,8 @@
-export default function BookDemoPage() {
+'use client';
+
+import React, { JSX } from 'react';
+
+export default function BookDemoPage(): JSX.Element {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-900 text-black dark:text-white p-8 transition-colors duration-300">
       <h1 className="text-4xl font-bold mb-4">Book a Demo</h1>
@@ -26,7 +30,7 @@ export default function BookDemoPage() {
             placeholder="What are you hoping to see during the demo?"
             className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 rounded-md px-4 py-2"
             rows={4}
-          ></textarea>
+          />
           <button
             type="submit"
             className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-md transition-colors"
