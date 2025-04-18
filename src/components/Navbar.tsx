@@ -67,8 +67,9 @@ export default function Navbar() {
               afterSignOutUrl="/"
               appearance={{
                 elements: {
-                  avatarBox: 'w-12 h-12' // ✅ Bigger profile picture (48px)
-                }
+                  avatarBox: 'w-14 h-14',
+                  avatarImage: 'w-14 h-14 rounded-full',
+                },
               }}
             />
           </SignedIn>
