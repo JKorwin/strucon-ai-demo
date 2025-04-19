@@ -24,19 +24,8 @@ export default function Navbar() {
         </Link>
 
         <div className="flex space-x-6 items-center">
-          {/* Dropdown Menu */}
-          <div className="relative group">
-            <button className="px-3 py-2 text-white">Features ▼</button>
-            <div className="absolute hidden group-hover:block bg-gray-800 shadow-lg rounded-md mt-1 py-2">
-              <Link href="/features/crm-integration" className="block px-4 py-2 text-white">Instant CRM Integration</Link>
-              <Link href="/features/predictive-analytics" className="block px-4 py-2 text-white">Predictive Analytics</Link>
-              <Link href="/features/profitability-insights" className="block px-4 py-2 text-white">Profitability Insights</Link>
-              <Link href="/features/vendor-management" className="block px-4 py-2 text-white">Vendor Management</Link>
-            </div>
-          </div>
-
+          {/* Remaining nav links */}
           <Link href="/pricing" className="text-white">Pricing</Link>
-          <Link href="/company" className="text-white">Company</Link>
           <Link href="/book-demo" className="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded">
             Book a Demo
           </Link>
