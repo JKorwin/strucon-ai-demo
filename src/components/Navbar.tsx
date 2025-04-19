@@ -29,9 +29,12 @@ export default function Navbar() {
             Pricing
           </Link>
 
-          <Link href="/book-demo" className="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded">
-            Book a Demo
-          </Link>
+          {/* Only show Book a Demo when signed out */}
+          <SignedOut>
+            <Link href="/book-demo" className="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded">
+              Book a Demo
+            </Link>
+          </SignedOut>
 
           {/* Show Dashboard button if logged in */}
           <SignedIn>
