@@ -13,12 +13,10 @@ export default function Hero() {
         transition={{ duration: 0.8 }}
         className="flex-1 max-w-xl"
       >
-        <span className="uppercase text-indigo-500 font-semibold tracking-wide text-sm">
-        </span>
-        <h1 className="mt-4 text-5xl font-bold leading-tight text-gray-800">
+        <h1 className="mt-4 text-5xl font-bold leading-tight text-gray-800 dark:text-gray-100">
           Centralized AI Construction Intelligence​
         </h1>
-        <p className="mt-6 text-lg text-gray-600">
+        <p className="mt-6 text-lg text-gray-600 dark:text-gray-400">
           Seamlessly integrate advanced analytics directly into your favorite construction CRMs.
           Quickly understand spending, optimize profitability, and enhance project outcomes—all in one intuitive dashboard.
         </p>
