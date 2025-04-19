@@ -17,11 +17,11 @@ export default function DashboardPage() {
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
   const integrations = [
-    { name: 'Excel', img: '/images/excel-logo.png', href: '/integrations/excel' },
-    { name: 'QuickBooks', img: '/images/quickbooks-logo.png', href: '/integrations/quickbooks' },
-    { name: 'Procore', img: '/images/jobtread-logo.png', href: '/integrations/procore' },
-    { name: 'Google Calendar', img: '/images/googlecalendar-logo.png', href: '/integrations/google-calendar' },
-    { name: 'BuildTrend', img: '/images/buildertrend-logo.png', href: '/integrations/buildtrend' },
+    { name: 'Excel', img: '/images/excel-logo.png', href: 'https://www.microsoft.com/en-us/microsoft-365/excel' },
+    { name: 'QuickBooks', img: '/images/quickbooks-logo.png', href: 'https://quickbooks.intuit.com/' },
+    { name: 'JobTread', img: '/images/jobtread-logo.png', href: 'https://www.jobtread.com/' },
+    { name: 'Google Calendar', img: '/images/googlecalendar-logo.png', href: 'https://calendar.google.com/' },
+    { name: 'BuilderTrend', img: '/images/buildertrend-logo.png', href: 'https://www.buildertrend.com/' },
   ];
 
   const simulateUpload = (fileList: File[]) => {
@@ -113,7 +113,7 @@ export default function DashboardPage() {
       <SignedOut><SignIn /></SignedOut>
       <SignedIn>
         <div className="flex h-[calc(100vh-64px)] overflow-hidden text-lg">
-          {/* Integrations column on left */}
+          {/* Future Integrations on Left */}
           <aside className="w-64 bg-gray-100 dark:bg-gray-900 border-r p-4 flex flex-col">
             <h2 className="text-lg font-semibold mb-4 text-gray-800 dark:text-white">Future Integrations</h2>
             {integrations.map(({ name, img, href }) => (
