@@ -111,9 +111,16 @@ export default function DashboardPage() {
       <SignedOut><SignIn /></SignedOut>
       <SignedIn>
         <div className="flex h-[calc(100vh-64px)] overflow-hidden text-lg">
-          {/* Future Integrations */}
-          <aside className="w-64 bg-gray-100 dark:bg-gray-900 border-r p-4 flex flex-col">
-            <h2 className="text-lg font-semibold mb-4 text-gray-800 dark:text-white">Future Integrations</h2>
+          {/* Left sidebar: Future Integrations */}
+          <aside className="w-64 bg-gray-100 dark:bg-gray-900 border-r p-4 flex flex-col items-center">
+            {/* New Dashboard Image */}
+            <img
+              src="/images/dashboard-logo.png"
+              alt="Strucon Dashboard"
+              className="w-full mb-4 rounded shadow"
+            />
+
+            <h2 className="text-lg font-semibold mb-4 text-gray-800 dark:text-white text-center">Future Integrations</h2>
             {integrations.map(({ name, img, href }) => (
               <a
                 key={name}
@@ -130,7 +137,6 @@ export default function DashboardPage() {
           {/* Chat Section */}
           <main className="flex flex-col items-center flex-grow px-6 py-4 bg-white dark:bg-gray-900 text-base w-full relative">
             <h1 className="text-2xl font-bold mb-2 text-center text-gray-900 dark:text-white">Ask Foreman</h1>
-
             <div
               ref={chatContainerRef}
               className="relative flex-grow w-full flex justify-center overflow-y-auto h-[calc(100vh-400px)] max-h-[calc(100vh-400px)] pb-4 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-900 pr-10"
@@ -185,7 +191,7 @@ export default function DashboardPage() {
             </div>
           </main>
 
-          {/* File Upload Section */}
+          {/* Right sidebar: File Uploads */}
           <aside className="w-64 bg-gray-100 dark:bg-gray-900 border-l p-4 flex flex-col">
             <h2 className="text-lg font-semibold mb-4 text-gray-800 dark:text-white">Uploaded Files</h2>
             <div
