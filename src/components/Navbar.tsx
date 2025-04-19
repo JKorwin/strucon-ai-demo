@@ -27,7 +27,7 @@ export default function Navbar() {
         {/* Center: Welcome message (only if logged in) */}
         <SignedIn>
           <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white text-2xl font-semibold animate-fadeIn">
-            Welcome, User
+            Welcome, Michael
           </div>
         </SignedIn>
 
