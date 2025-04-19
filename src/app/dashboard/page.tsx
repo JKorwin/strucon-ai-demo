@@ -115,7 +115,7 @@ export default function DashboardPage() {
           <aside className="w-64 bg-gray-100 dark:bg-gray-900 border-r p-4 flex flex-col items-center">
             {/* New Dashboard Image */}
             <img
-              src="/images/dashboard-logo.png"
+              src="/images/dashboard-preview.png"
               alt="Strucon Dashboard"
               className="w-full mb-4 rounded shadow"
             />
