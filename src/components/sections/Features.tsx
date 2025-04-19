@@ -10,26 +10,28 @@ export default function Features() {
           Key Features
         </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 place-items-center">
-          {/* Top Row */}
-          <div className="w-full max-w-md p-6 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg shadow hover:shadow-lg transition-all text-center">
-            <h3 className="text-xl font-semibold mb-2">All-in-One Integration Hub</h3>
-            <p>
-              We unify tools like QuickBooks, Excel, JobTread, and Procore into a single source of truth—
-              cutting out the clutter and manual work.
-            </p>
-          </div>
+        <div className="flex flex-col items-center space-y-8">
+          {/* Top Row - Flex with 10px gap */}
+          <div className="flex flex-col md:flex-row gap-[10px]">
+            <div className="w-full md:w-[520px] p-6 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg shadow hover:shadow-lg transition-all text-center">
+              <h3 className="text-xl font-semibold mb-2">All-in-One Integration Hub</h3>
+              <p>
+                We unify tools like QuickBooks, Excel, JobTread, and Procore into a single source of truth—
+                cutting out the clutter and manual work.
+              </p>
+            </div>
 
-          <div className="w-full max-w-md p-6 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg shadow hover:shadow-lg transition-all text-center">
-            <h3 className="text-xl font-semibold mb-2">AI-Powered Understanding</h3>
-            <p>
-              Our language model reads, analyzes, and connects information across PDFs, spreadsheets, and systems—
-              spotting issues humans miss and delivering answers in seconds.
-            </p>
+            <div className="w-full md:w-[520px] p-6 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg shadow hover:shadow-lg transition-all text-center">
+              <h3 className="text-xl font-semibold mb-2">AI-Powered Understanding</h3>
+              <p>
+                Our language model reads, analyzes, and connects information across PDFs, spreadsheets, and systems—
+                spotting issues humans miss and delivering answers in seconds.
+              </p>
+            </div>
           </div>
 
           {/* Bottom Row - Centered */}
-          <div className="w-full max-w-md p-6 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg shadow hover:shadow-lg transition-all md:col-span-2 md:mx-auto text-center">
+          <div className="w-full max-w-md p-6 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg shadow hover:shadow-lg transition-all text-center">
             <h3 className="text-xl font-semibold mb-2">Impact That Compounds</h3>
             <p>
               By automating insights and syncing the field with the office, we save hours per week,
