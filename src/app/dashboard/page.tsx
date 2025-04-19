@@ -19,9 +19,7 @@ export default function DashboardPage() {
   const integrations = [
     { name: 'Excel', img: '/images/excel-logo.png', href: 'https://www.microsoft.com/en-us/microsoft-365/excel' },
     { name: 'QuickBooks', img: '/images/quickbooks-logo.png', href: 'https://quickbooks.intuit.com/' },
-    { name: 'JobTread', img: '/images/jobtread-logo.png', href: 'https://www.jobtread.com/' },
     { name: 'Google Calendar', img: '/images/googlecalendar-logo.png', href: 'https://calendar.google.com/' },
-    { name: 'BuilderTrend', img: '/images/buildertrend-logo.png', href: 'https://www.buildertrend.com/' },
   ];
 
   const simulateUpload = (fileList: File[]) => {
