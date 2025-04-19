@@ -16,20 +16,22 @@ export default function Mockups() {
       <div className="grid md:grid-cols-3 gap-8">
         {images.map((img, index) => {
           const isHighlighted = img.src.includes("dashboard-preview-updated");
+
           return (
             <motion.div
               key={index}
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: index * 0.2, duration: 0.5 }}
-              className={isHighlighted ? "border-4 border-[#FF6B00] rounded-xl" : ""}
             >
               <Image
                 src={img.src}
                 alt={img.alt}
-                width={400}
-                height={250}
-                className="rounded-xl shadow-lg"
+                width={460}
+                height={280}
+                className={`rounded-xl shadow-lg ${
+                  isHighlighted ? 'border-4 border-[#FF6B00]' : ''
+                }`}
               />
             </motion.div>
           );
