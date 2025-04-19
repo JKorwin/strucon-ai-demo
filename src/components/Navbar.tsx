@@ -24,11 +24,21 @@ export default function Navbar() {
         </Link>
 
         <div className="flex space-x-6 items-center">
-          {/* Remaining nav links */}
-          <Link href="/pricing" className="text-white">Pricing</Link>
+          {/* Universal Buttons */}
+          <Link href="/pricing" className="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded">
+            Pricing
+          </Link>
+
           <Link href="/book-demo" className="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded">
             Book a Demo
           </Link>
+
+          {/* Show Dashboard button if logged in */}
+          <SignedIn>
+            <Link href="/dashboard" className="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded">
+              Dashboard
+            </Link>
+          </SignedIn>
 
           {/* Auth Buttons */}
           <SignedOut>
