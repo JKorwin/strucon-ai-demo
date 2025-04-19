@@ -16,6 +16,14 @@ export default function DashboardPage() {
   const inputRef = useRef<HTMLInputElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
+  const integrations = [
+    { name: 'Excel', img: '/images/excel-logo.png', href: '/integrations/excel' },
+    { name: 'QuickBooks', img: '/images/quickbooks-logo.png', href: '/integrations/quickbooks' },
+    { name: 'Procore', img: '/images/jobtread-logo.png', href: '/integrations/procore' },
+    { name: 'Google Calendar', img: '/images/googlecalendar-logo.png', href: '/integrations/google-calendar' },
+    { name: 'BuildTrend', img: '/images/buildertrend-logo.png', href: '/integrations/buildtrend' },
+  ];
+
   const simulateUpload = (fileList: File[]) => {
     let interval = setInterval(() => {
       setUploadProgress((prev) => {
@@ -105,18 +113,25 @@ export default function DashboardPage() {
       <SignedOut><SignIn /></SignedOut>
       <SignedIn>
         <div className="flex h-[calc(100vh-64px)] overflow-hidden text-lg">
-          {/* Tabs column on left */}
+          {/* Integrations column on left */}
           <aside className="w-64 bg-gray-100 dark:bg-gray-900 border-r p-4 flex flex-col">
-            <h2 className="text-lg font-semibold mb-4 text-gray-800 dark:text-white">Tabs</h2>
-            {[1, 2, 3, 4, 5].map(n => (
-              <div key={n} className="bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-white rounded-md p-4 text-sm mb-2">Tab {n}</div>
+            <h2 className="text-lg font-semibold mb-4 text-gray-800 dark:text-white">Future Integrations</h2>
+            {integrations.map(({ name, img, href }) => (
+              <a
+                key={name}
+                href={href}
+                className="flex items-center justify-center bg-gray-200 dark:bg-gray-800 rounded-md p-4 mb-2 hover:shadow transition"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <img src={img} alt={name} className="h-8 object-contain" />
+              </a>
             ))}
           </aside>
 
           {/* Chat Section */}
           <main className="flex flex-col items-center flex-grow px-6 py-4 bg-white dark:bg-gray-900 text-base w-full relative">
             <h1 className="text-2xl font-bold mb-2 text-center text-gray-900 dark:text-white">Ask Foreman</h1>
-
             <div
               ref={chatContainerRef}
               className="relative flex-grow w-full flex justify-center overflow-y-auto h-[calc(100vh-400px)] max-h-[calc(100vh-400px)] pb-4 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-900 pr-10"
