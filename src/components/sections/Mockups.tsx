@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 
 export default function Mockups() {
   const images = [
-    { src: "/images/dashboard-mockup.png", alt: "Dashboard Mockup" },
+    { src: "/images/dashboard-preview.png", alt: "Dashboard Mockup" },
     { src: "/images/timeline-mockup.png", alt: "Timeline & Milestone Tracking" },
     { src: "/images/vendor-mockup.png", alt: "Vendor Management" },
   ];
