@@ -1,8 +1,7 @@
-"use client";
+'use client';
 
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { Button } from '@/components/ui/button';
 
 export default function Hero() {
   return (
@@ -15,24 +14,14 @@ export default function Hero() {
         className="flex-1 max-w-xl"
       >
         <span className="uppercase text-indigo-500 font-semibold tracking-wide text-sm">
-         
         </span>
         <h1 className="mt-4 text-5xl font-bold leading-tight text-gray-800">
-        Centralized AI Construction Intelligence​
+          Centralized AI Construction Intelligence​
         </h1>
         <p className="mt-6 text-lg text-gray-600">
           Seamlessly integrate advanced analytics directly into your favorite construction CRMs.
           Quickly understand spending, optimize profitability, and enhance project outcomes—all in one intuitive dashboard.
         </p>
-
-        <div className="flex items-center space-x-4 mt-8">
-          <Button className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3">
-            Request Early Access
-          </Button>
-          <Button variant="outline" className="px-6 py-3">
-            Contact Sales
-          </Button>
-        </div>
       </motion.div>
 
       {/* Right Image Content */}
